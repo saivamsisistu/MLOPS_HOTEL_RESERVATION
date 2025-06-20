@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/MLOPS_PROJECTS/Hotel_Reservation_MLOPS/mlruns/0/b7eeac7dcd3044e8827df749bbe48b10/artifacts
+end_time: 1750405992674
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: b7eeac7dcd3044e8827df749bbe48b10
+run_name: adorable-lynx-483
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1750405969764
+status: 3
+tags: []
+user_id: sai vamsi

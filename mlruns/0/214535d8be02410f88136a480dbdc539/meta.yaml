@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/MLOPS_PROJECTS/Hotel_Reservation_MLOPS/mlruns/0/214535d8be02410f88136a480dbdc539/artifacts
+end_time: 1750399173670
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 214535d8be02410f88136a480dbdc539
+run_name: big-shark-488
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1750399156435
+status: 3
+tags: []
+user_id: sai vamsi
