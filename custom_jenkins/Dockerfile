@@ -24,5 +24,7 @@ VOLUME /var/lib/docker
 # Switch back to the Jenkins user
 USER jenkins
 
+# RUN python pipeline/training_pipeline.py
+
 
 

@@ -13,9 +13,10 @@ pipeline{
 
             }
         }
-        stage('Setting up of virtual enivironment and installing dependencies'){
+        stage('Setting up of virtual environment and installing dependencies'){
             steps{
-                echo 'Setting up of virtual enivironment and installing dependencies.....'
+                echo 'Setting up of virtual environment and installing dependencies.....'
+                // Note: The following activation path is for Linux agents. For Windows, use 'venv\\Scripts\\activate'.
                 sh '''
                 python -m venv ${VENV_DIR}
                 . ${VENV_DIR}/bin/activate
@@ -45,6 +46,16 @@ pipeline{
                     }
                 }
                 
+            }
+        }
+        stage('Train Model') {
+            steps {
+                withCredentials([file(credentialsId : 'gcp-key', variable : 'GOOGLE_APPLICATION_CREDENTIALS')]){
+                    sh '''
+                    . ${VENV_DIR}/bin/activate
+                    python pipeline/training_pipeline.py
+                    '''
+                }
             }
         }
     }
