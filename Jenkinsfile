@@ -11,8 +11,6 @@ pipeline{
 
             }
         }
-    }
-    stages{
         stage('Setting up of virtual enivironment and installing dependencies'){
             steps{
                 echo 'Setting up of virtual enivironment and installing dependencies.....'
