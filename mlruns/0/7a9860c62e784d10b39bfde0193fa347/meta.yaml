@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/MLOPS_PROJECTS/Hotel_Reservation_MLOPS/mlruns/0/7a9860c62e784d10b39bfde0193fa347/artifacts
+end_time: 1750779452721
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 7a9860c62e784d10b39bfde0193fa347
+run_name: calm-ape-436
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1750779414453
+status: 3
+tags: []
+user_id: sai vamsi
