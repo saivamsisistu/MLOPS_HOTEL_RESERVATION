@@ -20,11 +20,11 @@ COPY . .
 # Install the package in editable mode
 RUN pip install --no-cache-dir -e .
 
-# Train the model before running the application
-RUN python pipeline/training_pipeline.py
+# Train the model before running the application - This step should be done in the CI/CD pipeline, not in the Dockerfile.
+# RUN python pipeline/training_pipeline.py
 
 # Expose the port that Flask will run on
-EXPOSE 5000
+EXPOSE 8080
 
-# Command to run the app
+# Run the application
 CMD ["python", "application.py"]

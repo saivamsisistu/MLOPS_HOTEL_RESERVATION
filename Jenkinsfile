@@ -9,8 +9,7 @@ pipeline{
         stage('Cloning Github repo to Jenkins'){
             steps{
                 echo 'Cloning Github to Jenkins........'
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-token', url: 'https://github.com/saivamsisistu/MLOPS_HOTEL_RESERVATION.git']])
-
+                checkout scm
             }
         }
         stage('Setting up of virtual environment and installing dependencies'){
@@ -23,6 +22,16 @@ pipeline{
                 pip install --upgrade pip 
                 pip install -e .
                 '''
+            }
+        }
+        stage('Train Model') {
+            steps {
+                withCredentials([file(credentialsId : 'gcp-key', variable : 'GOOGLE_APPLICATION_CREDENTIALS')]){
+                    sh '''
+                    . ${VENV_DIR}/bin/activate
+                    python pipeline/training_pipeline.py
+                    '''
+                }
             }
         }
         stage('Building and pushing docker image to GCR '){
@@ -48,13 +57,27 @@ pipeline{
                 
             }
         }
-        stage('Train Model') {
-            steps {
-                withCredentials([file(credentialsId : 'gcp-key', variable : 'GOOGLE_APPLICATION_CREDENTIALS')]){
-                    sh '''
-                    . ${VENV_DIR}/bin/activate
-                    python pipeline/training_pipeline.py
-                    '''
+        stage('Deploy to Google Cloud Run'){
+            steps{
+                withCredentials([file(credentialsId: 'gcp-key' , variable : 'GOOGLE_APPLICATION_CREDENTIALS')]){
+                    script{
+                        echo 'Deploy to Google Cloud Run.............'
+                        sh '''
+                        export PATH=$PATH:${GCLOUD_PATH}
+
+
+                        gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
+
+                        gcloud config set project ${GCP_PROJECT}
+
+                        gcloud run deploy ml-project \
+                            --image=gcr.io/${GCP_PROJECT}/ml-project:latest \
+                            --platform=managed \
+                            --region=us-central1 \
+                            --allow-unauthenticated
+                            
+                        '''
+                    }
                 }
             }
         }

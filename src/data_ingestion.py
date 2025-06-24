@@ -13,8 +13,8 @@ logger=get_logger(__name__)
 
 class DataIngestion:
     """
-    class for data ingestion, including downloading data from google storage,
-    splitting the dataset into training and testing sets, and saving them locaally.
+    Class for data ingestion, including downloading data from Google Cloud Storage,
+    splitting the dataset into training and testing sets, and saving them locally.
     """
     def __init__(self,config):
         self.config=config['data_ingestion']
@@ -26,52 +26,58 @@ class DataIngestion:
         logger.info(f"Data ingestion started with {self.bucket_name} bucket and file {self.file_name}")
     def download_csv_from_gcp(self):
         """
-        Downloads the cs file from GOogle cloud storage to the local path.
+        Downloads the csv file from Google Cloud Storage to the local path.
         
         Raises:
-            CustomExcpetion: If the error occurs in downloading the file from GCP.
+            CustomException: If the error occurs in downloading the file from GCP.
         """
         try:
+            if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
+                logger.error("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.")
+                raise CustomException("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set. Please set it to your GCP service account key JSON file.", None)
             client=storage.Client()
             bucket=client.bucket(self.bucket_name)
             blob=bucket.blob(self.file_name)
             
             blob.download_to_filename(RAW_DATA_PATH)
-            logger.info(f"Data downloaded successfully form {self.bucket_name} bucket to {RAW_DATA_PATH}")
+            logger.info(f"Data downloaded successfully from {self.bucket_name} bucket to {RAW_DATA_PATH}")
         except Exception as e:
             logger.error(f"Error downloading data from GCP : {e}")
-            raise CustomException("Error while donwloading the data from GCP",e)
+            raise CustomException("Error while downloading the data from GCP",e)
     
     def split_data(self):
         """
-        Splits the dataset into training and testing sets and saves them locaaly."""
-
+        Splits the dataset into training and testing sets and saves them locally.
+        """
         try:
-            logger.info(f"stating the data splitting process")
+            logger.info(f"starting the data splitting process")
             #load the raw data
             raw_Data=pd.read_csv(RAW_DATA_PATH)
             
 
             #split the data into training and testing sets
-            train_data,test_data=train_test_split(raw_Data,
-                                                  test_size=1-self.train_test_ratio,
-                                                  random_state=42)
-            logger.info(f"Raw data successfully split into train and test data with ratio (self.train_test_ratio)")
+            train_data, test_data = train_test_split(
+                raw_Data,
+                test_size=1 - self.train_test_ratio,
+                random_state=42
+            )
+            logger.info(f"Raw data successfully split into train and test data with ratio ({self.train_test_ratio})")
             #save the train and test data to the local path
             train_data.to_csv(TRAIN_DATA_PATH, index=False)
             test_data.to_csv(TEST_DATA_PATH,index=False)
             logger.info(f"Train and test data saved successfully to {TRAIN_DATA_PATH} and {TEST_DATA_PATH}")
 
         except Exception as e:
-            logger.error(f"Error occured while splitting the data: {e}")
-            raise CustomException("Error while splittin the data",e)
+            logger.error(f"Error occurred while splitting the data: {e}")
+            raise CustomException("Error while splitting the data",e)
         
     def run(self):
         """
         Runs the data ingestion process by downloading the data from GCP,
         splitting the data into training and testing sets, and saving them locally.
         Raises:
-            customException: If there is any error during the data ingestion process."""
+            CustomException: If there is any error during the data ingestion process.
+        """
         try:
             logger.info("starting the data ingestion process")
             #download the data from GCP
@@ -83,8 +89,8 @@ class DataIngestion:
             logger.info("Data ingestion process completed successfully")
 
         except Exception as e:
-            logger.error(f"customExcpetion: {str(e)}")
-            raise CustomException("Error during the data ingestioin process", e)
+            logger.error(f"CustomException: {str(e)}")
+            raise CustomException("Error during the data ingestion process", e)
         finally:
             logger.info("Data ingestion process finished")
 
